@@ -18,7 +18,6 @@ module Starscope::Lang
       extract_tree(ast, [], &block) unless ast.nil?
     end
 
-    private
 
     def self.extract_tree(tree, scope, &block)
       extract_node(tree, scope, &block)
@@ -110,5 +109,9 @@ module Starscope::Lang
         [node.type]
       end
     end
+
+
+    private_class_method :extract_tree, :extract_node, :scoped_name
+
   end
 end
