@@ -82,8 +82,7 @@ class Starscope::DB
     paths = paths.map { |p| self.class.normalize_glob(p) }
     @meta[:paths] += paths
     @meta[:paths].uniq!
-    files = Dir.glob(paths).select { |f| File.file? f }
-    files.delete_if { |f| matches_exclude?(f) }
+    files = Dir.glob(paths).select { |f| File.file?(f) && !matches_exclude?(f) }
     return if files.empty?
     @output.new_pbar('Building', files.length)
     add_files(files)
@@ -95,8 +94,7 @@ class Starscope::DB
     changes[:modified] ||= []
     changes[:deleted] ||= []
 
-    new_files = (Dir.glob(@meta[:paths]).select { |f| File.file? f }) - @meta[:files].keys
-    new_files.delete_if { |f| matches_exclude?(f) }
+    new_files = (Dir.glob(@meta[:paths]).select { |f| File.file?(f) && !matches_exclude?(f)  }) - @meta[:files].keys
 
     if changes[:deleted].empty? && changes[:modified].empty? && new_files.empty?
       @output.normal('No changes detected.')
